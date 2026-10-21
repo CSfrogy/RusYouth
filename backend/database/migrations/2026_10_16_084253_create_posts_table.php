@@ -13,10 +13,18 @@ return new class () extends Migration {
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('title')->unique();
+            $table->foreignId('user_id')->constrained()->restrictOnDelete();
+            $table->string('cover_image')->nullable();
+            $table->string('title');
             $table->string('category')->default(PostCategory::NEWS->value);
-            $table->string('body');
+            $table->string('slug')->unique();
+            $table->text('body');
+            $table->timestamp('published_at')->nullable();
+            $table->unsignedInteger('views')->default(0);
+            $table->string('excerpt', 300)->nullable();
             $table->timestamps();
+
+            $table->index(['category', 'published_at']);
         });
     }
 
