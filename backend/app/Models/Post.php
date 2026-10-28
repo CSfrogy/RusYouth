@@ -6,6 +6,7 @@ use App\Enums\PostCategory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -14,13 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[Fillable(['title', 'category', 'slug', 'excerpt', 'body', 'published_at', 'cover_image'])]
 class Post extends Model
 {
-    protected function casts(): array
-    {
-        return [
-            'category' => PostCategory::class,
-            'published_at' => 'datetime',
-        ];
-    }
+    use HasFactory;
 
     public function user(): BelongsTo
     {
@@ -35,6 +30,14 @@ class Post extends Model
     public function likedBy(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'likes')->withTimestamps();
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'category' => PostCategory::class,
+            'published_at' => 'datetime',
+        ];
     }
 
     #[Scope]
