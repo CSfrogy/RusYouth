@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
 
         $posts = Post::factory(50)
             ->has(
+
                 Comment::factory(3)
                     ->state(fn (array $attributes) => [
                         'user_id' => $users->random()->id,
@@ -38,5 +39,9 @@ class DatabaseSeeder extends Seeder
             Comment::factory()->reply($comment)->create(['user_id' => $users->random()->id]);
         }
 
+        $publishedPosts = Post::published()->pluck('id');
+        foreach ($users as $user) {
+            $user->likedPosts()->syncWithoutDetaching($publishedPosts->shuffle()->take(rand(3, 15)));
+        }
     }
 }
