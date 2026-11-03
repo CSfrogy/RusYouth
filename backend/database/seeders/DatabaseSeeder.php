@@ -3,9 +3,10 @@
 namespace Database\Seeders;
 
 use App\Enums\UserRole;
+use App\Models\Post;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,11 +18,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-        DB::table('users')->insert([
-            'name' => 'Bulat',
+        $admin = User::factory()->admin()->create([
+            'name' => 'Admin',
             'role' => UserRole::ADMIN->value,
-            'email' => 'lonelyguse@gmail.com',
-            'password' => bcrypt('altan2012ASD'),
+            'email' => 'admintest@mail.com',
+            'password' => bcrypt('password'),
         ]);
+
+        User::factory(10)->create();
+
+        Post::factory(50)->create(['user_id' => $admin->id]);
     }
 }
