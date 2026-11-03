@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Enums\UserRole;
+use App\Models\Comment;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
@@ -17,16 +17,21 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
         $admin = User::factory()->admin()->create([
             'name' => 'Admin',
-            'role' => UserRole::ADMIN->value,
             'email' => 'admintest@mail.com',
             'password' => bcrypt('password'),
         ]);
 
-        User::factory(10)->create();
+        $users = User::factory(10)->create();
 
-        Post::factory(50)->create(['user_id' => $admin->id]);
+        $posts = Post::factory(50)
+            ->has(
+                Comment::factory(3)
+                    ->state(fn (array $attributes) => [
+                        'user_id' => $users->random()->id,
+                    ])
+            )
+            ->create(['user_id' => $admin->id]);
     }
 }
