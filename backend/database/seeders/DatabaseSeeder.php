@@ -30,8 +30,13 @@ class DatabaseSeeder extends Seeder
                 Comment::factory(3)
                     ->state(fn (array $attributes) => [
                         'user_id' => $users->random()->id,
-                    ])
-            )
-            ->create(['user_id' => $admin->id]);
+                    ]),
+            )->create(['user_id' => $admin->id]);
+
+        $comments = Comment::all();
+        foreach ($comments->random(10) as $comment) {
+            Comment::factory()->reply($comment)->create(['user_id' => $users->random()->id]);
+        }
+
     }
 }
